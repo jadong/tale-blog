@@ -9,6 +9,7 @@ import com.blade.mvc.annotation.PostRoute;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.ui.RestResponse;
 import com.tale.annotation.SysLog;
+import com.tale.bootstrap.TaleConst;
 import com.tale.controller.BaseController;
 import com.tale.model.entity.Users;
 import com.tale.service.OptionsService;
@@ -30,7 +31,7 @@ public class SystemController extends BaseController {
     private SiteService siteService;
 
     @SysLog("保存个人信息")
-    @PostRoute("profile")
+    @PostRoute("save_profile")
     public RestResponse saveProfile(@Param String screenName, @Param String email, Request request) {
         Users users = this.user();
         if (StringKit.isNotBlank(screenName) && StringKit.isNotBlank(email)) {
@@ -38,6 +39,10 @@ public class SystemController extends BaseController {
             temp.setScreenName(screenName);
             temp.setEmail(email);
             temp.updateById(users.getUid());
+
+            users.setScreenName(screenName);
+            users.setEmail(email);
+            request.session().attribute(TaleConst.LOGIN_SESSION_KEY, users);
         }
         return RestResponse.ok();
     }

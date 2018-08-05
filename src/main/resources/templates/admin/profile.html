@@ -92,7 +92,7 @@
     function saveSetting() {
         var param = $('#user-form').serialize();
         tale.post({
-            url : '/admin/profile',
+            url : '/admin/save_profile',
             data: param,
             success: function (result) {
                 if(result && result.success){

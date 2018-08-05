@@ -13,6 +13,7 @@ public class Application {
 
     public static void main(String[] args) {
         Blade blade = Blade.of();
+        blade.listen(8089);
         TaleLoader.init(blade);
         blade.use(new CsrfMiddleware()).start(Application.class, args);
     }
