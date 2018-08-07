@@ -11,6 +11,7 @@ import com.tale.model.dto.Types;
 import com.tale.model.entity.Comments;
 import com.tale.model.entity.Contents;
 import com.tale.model.entity.Metas;
+import com.tale.model.entity.Users;
 import com.tale.service.SiteService;
 import com.tale.utils.TaleUtils;
 import io.github.biezhi.anima.enums.OrderBy;
@@ -680,6 +681,23 @@ public final class Theme {
             return noComment;
         }
         return contents.getCommentsNum() > 0 ? String.format(value, contents.getCommentsNum()) : noComment;
+    }
+
+    /**
+     * 显示文章作者
+     * @return
+     */
+    public static String publish_author(){
+        Contents contents = current_article();
+        if (contents == null) {
+            return "匿名";
+        }
+        Users users = select().from(Users.class).byId(contents.getAuthorId());
+        if (users == null) {
+            return "匿名";
+        }
+
+        return users.getScreenName();
     }
 
     /**

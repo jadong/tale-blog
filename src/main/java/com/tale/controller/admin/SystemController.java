@@ -31,6 +31,32 @@ public class SystemController extends BaseController {
     private SiteService siteService;
 
     @SysLog("保存个人信息")
+    @PostRoute("add_user")
+    public RestResponse addUser(@Param String username, @Param String password, @Param String screenName, @Param String email, Request request) {
+        if (StringKit.isBlank(username) || StringKit.isBlank(password)
+                || StringKit.isBlank(email) || StringKit.isBlank(screenName)) {
+            return RestResponse.fail("请确认信息输入完整");
+        }
+
+        if (password.length() < 6 || password.length() > 14) {
+            return RestResponse.fail("请输入6-14位密码");
+        }
+
+        Users newUser = new Users();
+        newUser.setScreenName(screenName);
+        newUser.setEmail(email);
+
+        String pwd = EncryptKit.md5(username + password);
+
+        newUser.setPassword(pwd);
+        newUser.setUsername(username);
+        newUser.setCreated((int) (System.currentTimeMillis() / 1000));
+        newUser.save();
+
+        return RestResponse.ok();
+    }
+
+    @SysLog("保存个人信息")
     @PostRoute("save_profile")
     public RestResponse saveProfile(@Param String screenName, @Param String email, Request request) {
         Users users = this.user();
@@ -62,8 +88,8 @@ public class SystemController extends BaseController {
             return RestResponse.fail("请输入6-14位密码");
         }
 
-        Users  temp = new Users();
-        String pwd  = EncryptKit.md5(users.getUsername() + password);
+        Users temp = new Users();
+        String pwd = EncryptKit.md5(users.getUsername() + password);
         temp.setPassword(pwd);
         temp.updateById(users.getUid());
         return RestResponse.ok();
